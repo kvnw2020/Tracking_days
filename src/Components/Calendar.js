@@ -1,6 +1,8 @@
 import React from 'react'
 import moment, { weekdaysShort } from 'moment'
 import './Calendar.css'
+import Countdown from './Countdown'
+import './Countdown.css'
 
 class Calender extends React.Component {
     constructor(props) {
@@ -11,6 +13,7 @@ class Calender extends React.Component {
             showMonthTable: false,
             showYearTable: false,
             selectDay: null,
+            showCountdown: false,
         }
         this.setmonth = this.setmonth.bind(this)
         this.showMonth = this.showMonth.bind(this)
@@ -202,12 +205,17 @@ class Calender extends React.Component {
     }
 
     selectDay(e, d) {
+        let date = Object.assign({}, this.state.date)
+        date = moment(date).set('date', d)
         this.setState({
-            selectDay: d
+            date: date,
+            showCountdown: !this.state.showCountdown
         })
     }
 
     render() {
+
+        console.log('right here: ',this.state.date.format('MMMM, DD, YYYY'))
 
         let sunToSat = this.weekDayShort.map(day => {
             return (
@@ -256,6 +264,7 @@ class Calender extends React.Component {
 
         return (
             <div className='container'>
+                <Countdown deadline={this.state.date.format('MMMM DD YYYY')} />
                 {this.state.showYearTable && <this.ListOfYear data={this.year()} getYears={this.getYears} setYear={this.setYear} />}
                 {this.state.showMonthTable && <this.ListOfMonths data={moment.months()} setmonth={this.setmonth} />}
                 <div className='calendar'>
@@ -277,7 +286,6 @@ class Calender extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <h1>Selected day is: {this.state.selectDay}</h1>
             </div>
         )
     }
